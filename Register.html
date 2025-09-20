@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cyberpunk 2K25 Registration</title>
+
+<style>
+/* 🌌 Body Background */
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #0b0f1d;
+  font-family: Arial, sans-serif;
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding: 20px;
+  overflow-x: hidden;
+}
+
+/* ⭐ Particle Layer */
+#stars-js {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0; left: 0;
+  z-index: 0;
+  background: #000;
+}
+
+/* 🔹 Main Container */
+.container {
+  position: relative;
+  z-index: 1;
+  background: rgba(28, 31, 46, 0.9);
+  padding: 25px;
+  border-radius: 12px;
+  width: 900px;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+  box-shadow: 0 0 30px rgba(0, 240, 255, 0.5),
+              0 0 45px rgba(255, 45, 149, 0.4);
+  border: 1px solid rgba(0, 240, 255, 0.4);
+}
+
+/* Titles */
+h2, h3, h4 {
+  text-align: center;
+  margin-bottom: 15px;
+  font-size: clamp(1.3em, 4vw, 1.7em);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Labels */
+label { display: block; margin: 10px 0 5px; font-size: 0.95em; }
+
+/* 🔹 Form Fields */
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="file"],
+select,
+textarea {
+  width: 100%;
+  max-width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 14px;
+  border-radius: 6px;
+  border: 1px solid #00f0ff;
+  background: #1c1f2e;
+  color: #fff;
+  font-size: 0.95em;
+  outline: none;
+  transition: 0.3s;
+  box-sizing: border-box;
+  box-shadow: 0 0 8px rgba(0, 240, 255, 0.4);
+}
+
+input:hover, select:hover, textarea:hover {
+  border-color: #ff2d95;
+  box-shadow: 0 0 10px rgba(255, 45, 149, 0.6);
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: #00f0ff;
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.9);
+}
+
+input::placeholder, textarea::placeholder {
+  color: #aaa;
+  font-style: italic;
+}
+
+select option {
+  background: #1c1f2e;
+  color: #fff;
+  padding: 8px;
+}
+
+/* 🔹 Buttons */
+button {
+  width: 100%;
+  max-width: 100%;
+  padding: 12px;
+  background: linear-gradient(90deg, #00f0ff, #ff2d95);
+  color: #000;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  margin-top: 10px;
+  box-sizing: border-box;
+}
+button:hover {
+  opacity: 0.85;
+  transform: scale(1.02);
+}
+
+.hidden { display: none; }
+
+/* 🔹 Event Cards */
+.event-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 15px;
+  margin: 20px 0;
+}
+.event-card {
+  background: #2b2f47;
+  padding: 15px;
+  border-radius: 12px;
+  cursor: pointer;
+  text-align: center;
+  transition: 0.3s;
+  border: 2px solid transparent;
+  font-size: 0.95em;
+}
+.event-card.active {
+  border: 2px solid #00f0ff;
+  background: #00f0ff;
+  color: #000;
+  box-shadow: 0 0 12px #00f0ff;
+}
+
+/* 🔹 Team Cards */
+.team-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 15px 0 25px;
+}
+.team-card {
+  flex: 1;
+  min-width: 80px;
+  background: #2b2f47;
+  padding: 12px;
+  border-radius: 10px;
+  text-align: center;
+  cursor: pointer;
+  border: 2px solid transparent;
+  font-size: 0.9em;
+}
+.team-card.active {
+  border: 2px solid #ff2d95;
+  background: #ff2d95;
+  color: #000;
+  box-shadow: 0 0 10px #ff2d95;
+}
+.team-card.disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* 🔹 Payment & WhatsApp */
+.qr-container,.whatsapp-container { text-align: center; margin-top: 20px; }
+a.whatsapp-link {
+  display: block;
+  background: #25D366;
+  color: white;
+  padding: 12px;
+  border-radius: 8px;
+  text-decoration: none;
+  margin: 10px auto;
+  width: 85%;
+  font-size: 0.95em;
+}
+a.whatsapp-link:hover { background: #1da851; }
+img#qrCode { max-width: 100%; height: auto; }
+
+/* 📱 Responsive Tweaks */
+@media(max-width:768px){
+  .event-cards { grid-template-columns: repeat(2, 1fr); }
+  h2,h3 { font-size: 1.2em; }
+  input, button, .team-card { font-size: 0.9em; }
+}
+@media(max-width:480px){
+  .event-cards { grid-template-columns: 1fr; }
+  .team-cards { flex-direction: column; }
+}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+</head>
+<body>
+<div id="stars-js"></div>
+<div class="container">
+  <h2>CYBERPUNK 2K25 Registration</h2>
+
+  <!-- Step 1: Event Selection + Team Size -->
+  <div id="step1">
+    <h3>Select Events:</h3>
+    <div class="event-cards" id="eventCards">
+      <div class="event-card" data-event="hackers">🔐 Hacker’s Heist</div>
+      <div class="event-card" data-event="detectyx">🕵 DetectyX</div>
+      <div class="event-card" data-event="web3">🌐 Web3 Hackathon</div>
+      <div class="event-card" data-event="violent">🎭 Nagpur’s Got Violent</div>
+    </div>
+    <h3>Choose Team Size:</h3>
+    <div class="team-cards" id="teamCards">
+      <div class="team-card" data-size="1">Solo</div>
+      <div class="team-card" data-size="2">Duo</div>
+      <div class="team-card" data-size="3">Trio</div>
+      <div class="team-card" data-size="4">Squad</div>
+      <div class="team-card" data-size="5">Team of Five</div>
+    </div>
+    <button onclick="generateMemberForm()">Next</button>
+  </div>
+
+  <!-- Step 2: Participants Info -->
+  <form id="registrationForm" class="hidden">
+    <label>Team Name:</label>
+    <input type="text" name="Team Name" required>
+    <div id="memberFields"></div>
+    <button type="submit">Proceed to Payment</button>
+  </form>
+
+  <!-- Step 3: Payment -->
+  <div id="qrSection" class="hidden qr-container">
+    <h3>Scan to Pay</h3>
+    <p id="amountDisplay"></p>
+    <img id="qrCode" src="" alt="QR Code">
+    <label>Transaction ID:</label>
+    <input type="text" id="transactionId" required>
+    <label>Upload Payment Screenshot:</label>
+    <input type="file" id="paymentFile" accept="image/*" required>
+    <button id="payButton" onclick="submitRegistration()">I’ve Completed Payment</button>
+  </div>
+
+  <!-- Step 4: WhatsApp -->
+  <div id="whatsappSection" class="hidden whatsapp-container">
+    <h3>Join WhatsApp Groups</h3>
+    <div id="whatsappLinks"></div>
+  </div>
+</div>
+
+<script>
+let selectedEvents = [], selectedTeamSize = null, totalAmount = 0;
+
+// Event fee table
+const EVENT_RULES = {
+  hackers: {1:80, 2:140, 3:180, 4:200},
+  detectyx: {1:70, 2:100, 3:130},
+  web3: {3:200, 4:250, 5:250},
+  violent: {2:100, 4:200, 5:200}
+};
+
+// Event selection
+const eventCards = document.querySelectorAll(".event-card");
+const teamCards = document.querySelectorAll(".team-card");
+
+eventCards.forEach(c => c.addEventListener("click", () => {
+  c.classList.toggle("active");
+  const ev = c.dataset.event;
+  selectedEvents = c.classList.contains("active") ? [...selectedEvents, ev] : selectedEvents.filter(e => e!==ev);
+  updateTeamCards();
+}));
+
+teamCards.forEach(c => c.addEventListener("click", () => {
+  if(c.classList.contains("disabled")) return;
+  teamCards.forEach(x => x.classList.remove("active"));
+  c.classList.add("active");
+  selectedTeamSize = parseInt(c.dataset.size);
+}));
+
+function updateTeamCards() {
+  teamCards.forEach(tc => {
+    const size = parseInt(tc.dataset.size);
+    const valid = selectedEvents.length ? selectedEvents.every(ev => EVENT_RULES[ev][size]) : true;
+    tc.classList.toggle("disabled", !valid);
+    if(!valid && tc.classList.contains("active")){
+      tc.classList.remove("active");
+      selectedTeamSize = null;
+    }
+  });
+}
+
+// Generate participant form
+function generateMemberForm(){
+  if (!selectedEvents.length || !selectedTeamSize) { alert("Select events & team size"); return; }
+
+  const fields = document.getElementById("memberFields"); fields.innerHTML="";
+  const branches = ["CSE(CYBERSECURITY)","CSE(DATASCIENCE)","Cse/CE","IT","IoT","Mechanical","Civil","Electronics","Electrical","AI","Robotics","B.Voc","Others"]; 
+
+  for (let i=1; i<=selectedTeamSize; i++){
+    fields.innerHTML += `
+      <h4>Participant ${i}</h4>
+      <label>Full Name:</label><input type="text" name="Full name of Participant ${i}" required>
+      <label>Email:</label><input type="email" name="Email of Participant ${i}" required>
+      <label>Phone:</label><input type="text" name="Phone Number of Participant ${i}" required>
+      <label>College:</label><input type="text" name="College Name ${i}" required>
+      <label>Branch:</label>
+      <select name="Branch ${i}" required>
+        <option value="">Select Branch</option>
+        ${branches.map(b => `<option value="${b}">${b}</option>`).join("")}
+      </select>
+      <label>Year:</label>
+      <select name="Year ${i}" required>
+        <option value="">Select Year</option>
+        <option value="1st Year">1st Year</option>
+        <option value="2nd Year">2nd Year</option>
+        <option value="3rd Year">3rd Year</option>
+        <option value="4th Year">4th Year</option>
+      </select>
+      <label>Roll No:</label><input type="text" name="Roll No ${i}" required>`;
+  }
+
+  document.getElementById("step1").classList.add("hidden");
+  document.getElementById("registrationForm").classList.remove("hidden");
+}
+
+// Form submit → Payment
+document.getElementById("registrationForm").addEventListener("submit", e=>{
+  e.preventDefault();
+  totalAmount=0;
+  for(let ev of selectedEvents){ totalAmount+=EVENT_RULES[ev][selectedTeamSize]; }
+  document.getElementById("amountDisplay").innerText=`Total Amount: ₹${totalAmount}`;
+  document.getElementById("qrCode").src=
+    "https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=" + 
+    encodeURIComponent(`upi://pay?pa=8856813968@ptaxis&pn=Cyberpunk2K25&am=${totalAmount}`);
+  document.getElementById("registrationForm").classList.add("hidden");
+  document.getElementById("qrSection").classList.remove("hidden");
+});
+
+// Payment → WhatsApp
+async function submitRegistration(){
+  const btn = document.getElementById("payButton");
+  btn.disabled = true;
+  const originalText = btn.innerText;
+  btn.innerText = "Uploading...";
+
+  const txId = document.getElementById("transactionId").value;
+  const file = document.getElementById("paymentFile").files[0];
+  if(!txId || !file){ alert("Transaction ID & screenshot required!"); btn.disabled=false; btn.innerText=originalText; return; }
+
+  const formEl=document.getElementById("registrationForm");
+  const formData=new FormData(formEl);
+  formData.append("Events", selectedEvents.join(", "));
+  formData.append("Number of Participants", selectedTeamSize);
+  formData.append("Total Amount", totalAmount);
+  formData.append("Enter the Transaction ID", txId);
+
+  const reader = new FileReader();
+  reader.onload = ()=> {
+    const img = new Image();
+    img.src = reader.result;
+    img.onload = async ()=>{
+      const canvas = document.createElement("canvas");
+      const MAX_WIDTH=800, MAX_HEIGHT=800;
+      let width=img.width, height=img.height;
+      if(width>height){ if(width>MAX_WIDTH){ height*=MAX_WIDTH/width; width=MAX_WIDTH; } }
+      else { if(height>MAX_HEIGHT){ width*=MAX_HEIGHT/height; height=MAX_HEIGHT; } }
+      canvas.width = width; canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img,0,0,width,height);
+      const compressedData = canvas.toDataURL("image/jpeg",0.7).split(",")[1];
+      formData.append("Upload screenshot of payment done", compressedData);
+
+      const obj={}; formData.forEach((v,k)=> obj[k]=v);
+      try{
+        const res = await fetch("https://script.google.com/macros/s/AKfycbzs2xpnM5oRePEqo6QQwimq6iSZbRnRniHmNzudQhim-PhvsSDi0coUbwRsFts-xucwCw/exec",{method:"POST",body:new URLSearchParams(obj)});
+        const text = await res.text();
+        const data = JSON.parse(text);
+        if(data.result==="success"){ showWhatsApp(); }
+        else { alert("Error: "+data.error); btn.disabled=false; btn.innerText=originalText; }
+      }catch(err){ alert("Submission failed: "+err); btn.disabled=false; btn.innerText=originalText; }
+    };
+  };
+  reader.readAsDataURL(file);
+}
+
+// WhatsApp Links
+function showWhatsApp(){
+  document.getElementById("qrSection").classList.add("hidden");
+  const links={
+    hackers:"https://chat.whatsapp.com/JK7PSA0NostIXx6hekCII9",
+    detectyx:"https://chat.whatsapp.com/HT91rCKRnnV7sO3T8qrWa3",
+    web3:"https://chat.whatsapp.com/Hn0Y56aM9kCKGey496ymTL",
+    violent:"https://chat.whatsapp.com/BorHgehQ5tx2yOei5WAGvt"
+  };
+  const wrap=document.getElementById("whatsappLinks"); wrap.innerHTML="";
+  selectedEvents.forEach(ev=>{
+    if(links[ev]) wrap.innerHTML+=`<a class="whatsapp-link" href="${links[ev]}" target="_blank">Join ${ev.toUpperCase()} Group</a>`;
+  });
+  document.getElementById("whatsappSection").classList.remove("hidden");
+}
+
+</script>
+
+<script>
+particlesJS("stars-js", {
+  "particles": {
+    "number": {"value": 200,"density": {"enable": true,"value_area": 800}},
+    "color": { "value": ["#ffffff", "#00f0ff", "#ff2d95"] },
+    "shape": { "type": "circle" },
+    "opacity": {
+      "value": 0.8,"random": true,
+      "anim": {"enable": true,"speed": 1,"opacity_min": 0.3,"sync": false}
+    },
+    "size": {"value": 2,"random": true},
+    "line_linked": { "enable": false }
+  },
+  "interactivity": {"events": {"onhover": {"enable": false},"onclick": {"enable": false}}},
+  "retina_detect": true
+});
+</script>
+</body>
+</html>

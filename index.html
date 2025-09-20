@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Cyberpunk Fest 2025</title>
+<link rel="stylesheet" href="index.css">
+</head>
+
+<body class="night">
+  <!-- Splash Overlay -->
+  <!-- <div id="splash">
+    <h1 class="title glow-text reveal-up">
+      Welcome to <span style="color:var(--cyan)">Cyberpunk</span> Fest
+    </h1>
+  </div> -->
+
+  <!-- <div class="chip">NEON MODE • SCROLL ⬇</div> -->
+
+  <div class="dots" id="dots">
+    <div class="dot active" data-to="s1" aria-label="Particle Logo"></div>
+    <div class="dot" data-to="countdown-section" aria-label="Countdown"></div>
+    <div class="dot" data-to="s3" aria-label="City"></div>
+    <div class="dot" data-to="s4" aria-label="Events"></div>
+    <div class="dot" data-to="s5" aria-label="Team"></div>
+  </div>
+
+  <main>
+    <!-- Section 1: Particle Logo -->
+   <section id="s1">
+  <canvas id="space-bg"></canvas>
+  <canvas id="particle-canvas"></canvas>
+  <div class="section-inner"></div>
+  <div class="hud">Move your cursor to interact with particles</div>
+  <div class="hud2">NEO-DRIVE • ACTIVE</div>
+</section>
+
+
+    <!-- Section 2: Countdown -->
+    <section id="countdown-section">
+      <canvas id="countdown-particles"></canvas>
+      <div class="hud2">COUNTDOWN • LIVE</div>
+      <div class="section-inner">
+        <h2 class="title glow-text reveal-up" style="font-size: clamp(24px, 6vw, 48px); margin-bottom: 20px;">
+          Countdown to Cyberpunk Fest
+        </h2>
+        <div id="countdown" class="countdown">
+          <div class="time-box"><span id="days">00</span><small>Days</small></div>
+          <div class="time-box"><span id="hours">00</span><small>Hours</small></div>
+          <div class="time-box"><span id="minutes">00</span><small>Minutes</small></div>
+          <div class="time-box"><span id="seconds">00</span><small>Seconds</small></div>
+        </div>
+      </div>
+      <div class="astronaut">
+        <img src="astronaut.png"id="astronaut" alt="Astronaut">
+      </div>
+    </section>
+
+    <!-- Section 3: City -->
+    <section id="s3">
+      <canvas id="stars"></canvas>
+      <div class="skyline" id="skyline"></div>
+      <div class="car-wrap">
+        <svg class="car neon-cyan" viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+          <g transform="translate(60,40)">
+            <ellipse cx="140" cy="70" rx="120" ry="40" fill="#071026" stroke="#00f0ff" stroke-width="3" />
+            <path d="M20 70 Q60 20, 140 20 Q220 20, 260 70 Z" fill="#0b1530" stroke="#8b3eff" stroke-width="2" />
+            <ellipse cx="140" cy="45" rx="52" ry="28" fill="#061126" stroke="#00f0ff" stroke-width="2" />
+            <g transform="translate(30,86)">
+              <ellipse class="engine-glow" cx="60" cy="10" rx="40" ry="6" fill="#00f0ff" opacity="0.22" />
+              <ellipse class="engine-glow" cx="170" cy="10" rx="40" ry="6" fill="#ff2d95" opacity="0.18" />
+            </g>
+          </g>
+        </svg>
+      </div>
+      <div class="hud2">NEO-DRIVE • ALT: 1200m • SPD: 320 km/h</div>
+      <div class="section-inner">
+        <h2 class="title glow-text reveal-up" style="font-size: clamp(24px, 6vw, 48px); margin-bottom: 20px;">
+          Welcome to the Future
+        </h2>
+        <p class="reveal-up" style="max-width: 60ch; opacity: .9; font-size: clamp(14px, 2.5vw, 18px);">
+          Experience the ultimate cyberpunk festival where technology meets art, and the future becomes reality. Join us for an unforgettable journey into the digital frontier.
+        </p>
+        <div class="btn-container reveal-up">
+          <a href="Register.html" class="neon-btn">Register Now</a>
+        </div>
+      </div>
+
+       <!-- City skyline -->
+    <div class="skyline" id="skyline"></div>
+
+    <!-- HUD -->
+    <!-- <div class="hud">NEO-DRIVE • ALT: 1200m • SPD: 320 km/h</div> -->
+  </div>
+    <script>
+  
+    // STARFIELD
+    const canvas = document.getElementById('stars');
+    const ctx = canvas.getContext('2d');
+    let W = canvas.width = innerWidth;
+    let H = canvas.height = innerHeight;
+    function rand(min,max){return Math.random()*(max-min)+min}
+    const stars = [];
+    for(let i=0;i<120;i++){
+      stars.push({x:rand(0,W),y:rand(0,H),r:rand(0.4,1.8),v:rand(0.02,0.14)})
+    }
+    function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight}
+    addEventListener('resize',resize)
+    function drawStars(){
+      ctx.clearRect(0,0,W,H);
+      for(const s of stars){
+        s.x -= s.v*0.6;
+        if(s.x<0) s.x=W;
+        ctx.beginPath();
+        ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+        ctx.fillStyle='rgba(255,255,255,'+(0.35 + s.r*0.18)+')';
+        ctx.fill();
+      }
+    }
+    function loop(){drawStars();requestAnimationFrame(loop);} loop();
+
+    // BUILDINGS
+    const skyline = document.getElementById("skyline");
+    for(let i=0;i<25;i++){
+      const b = document.createElement("div");
+      b.className = "building";
+      const bw = 40 + Math.random()*100;
+      const bh = 80 + Math.random()*200;
+      b.style.width = bw+"px";
+      b.style.height = bh+"px";
+      b.style.left = (i*80)+"px";
+
+      // windows
+      for(let w=0;w<Math.floor(bw/10)*Math.floor(bh/15)/8;w++){
+        const win = document.createElement("div");
+        win.className="window";
+        b.appendChild(win);
+      }
+      skyline.appendChild(b);
+    }
+
+    // Billboards
+    // const billboard1 = document.createElement("div");
+    // billboard1.className = "billboard";
+    // billboard1.style.left = "30%";
+    // billboard1.style.bottom = "50%";
+    // billboard1.textContent = "NEON TECH";
+    // skyline.appendChild(billboard1);
+
+    const billboard2 = document.createElement("div");
+    billboard2.className = "billboard";
+    billboard2.style.left = "65%";
+    billboard2.style.bottom = "60%";
+    billboard2.textContent = "CYBER CORP";
+    skyline.appendChild(billboard2);
+    </script>
+    </section>
+      
+    <!-- Section 4: Events -->
+    <section id="s4">
+      <canvas id="stars-events"></canvas>
+      <div class="stage-events">
+        <div class="hud2">EVENTS • LOADING</div>
+      </div>
+
+      <div class="section-inner">
+        <h2 class="title glow-text reveal-up" style="font-size: clamp(24px, 6vw, 48px); margin-bottom: 40px;">
+          Featured Events
+        </h2>
+
+        <div class="events-container-3d">
+          <div class="card-3d">
+            <div class="wrapper">
+              <img src="hackers.jpg"
+                class="cover-image" alt="Hacker Heist" />
+            </div>
+            <div class="card-title">🔥 Hacker Heist</div>
+            <!-- <img src="HHAFTER.png" class="card-character-img" alt="Event Character" /> -->
+          </div>
+
+          <div class="card-3d">
+            <div class="wrapper">
+              <img src="Web3.png"
+                class="cover-image" alt="WEB3 Hackathon" />
+            </div>
+            <div class="card-title">⚡ WEB3 Hackathon</div>
+            <!-- <img src="Detectyxafter.png" class="card-character-img" alt="Event Character" /> -->
+          </div>
+
+          <div class="card-3d">
+            <div class="wrapper">
+              <img src="Detectyx.png"
+                class="cover-image" alt="AI Summit" />
+            </div>
+            <div class="card-title">🤖 DETECTYX</div>
+            <!-- <img src="IMAGES/Detectyxafter.png" class="card-character-img" alt="Event Character" /> -->
+          </div>
+
+          <div class="card-3d">
+            <div class="wrapper">
+              <img src="NGV.png"
+                class="cover-image" alt="Digital Art Show" />
+            </div>
+            <div class="card-title">🎨 Nagpur Got Voilent</div>
+            <!-- <img src="https://via.placeholder.com/80x80/8dfc94/000000?text=🎨" class="card-character-img" alt="Event Character" /> -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 5: Team -->
+    <section id="s5">
+      <div class="grid"></div>
+      <div class="section-inner">
+        <h2 class="title glow-text reveal-up" style="font-size: clamp(24px, 6vw, 48px); margin-bottom: 40px;">
+          Meet the Team
+        </h2>
+        <div class="team-scroll">
+        <div class="team-card reveal-up">
+        <div class="thumb">
+          <img src="Anshul.jpg" alt="Anshul Vairagade">
+          <span>Anshul Vairagade</span>
+       </div>
+          <div class="caption">Event Co-ordinator</div>
+        </div>
+        <div class="team-card reveal-up">
+        <div class="thumb">
+          <img src="Tanush.jpg" alt="Tanush Bamnote">
+          <span>Tanush Bamnote</span>
+       </div>
+          <div class="caption">Event Co-coordinator</div>
+        </div>
+        <div class="team-card reveal-up">
+        <div class="thumb">
+          <img src="Aditya.jpg" alt="Aditya Jadhav">
+          <span>Aditya Jadhav</span>
+       </div>
+          <div class="caption">Event Co-coordinator</div>
+        </div>
+        <div class="team-card reveal-up">
+        <div class="thumb">
+          <img src="Vedant.jpg" alt="Vedant Ghubade">
+          <span>Vedant Ghubade</span>
+       </div>
+          <div class="caption">Technical Head</div>
+        </div>
+        <div class="team-card reveal-up">
+        <div class="thumb">
+          <img src="Wansh.jpg" alt="Wansh Kumbhalkar">
+          <span>Wansh Kumbhalkar</span>
+       </div>
+          <div class="caption">Management Head</div>
+        </div>
+        <div class="team-card reveal-up">
+        <div class="thumb">
+          <img src="Sayare.jpg" alt="Vedant Sayare">
+          <span>Vedant Sayare</span>
+       </div>
+          <div class="caption">Finance Head</div>
+        </div>
+        <div class="team-card reveal-up">
+        <div class="thumb">
+          <img src="Sowmya.jpg" alt="Sowmya Datti">
+          <span>Sowmya Datti</span>
+       </div>
+          <div class="caption">Documentation Head</div>
+        </div>
+        <div class="team-card reveal-up">
+        <div class="thumb">
+          <img src="Gandharvi.jpg" alt="Gandharvi Bangde">
+          <span>Gandharvi Bangde</span>
+       </div>
+          <div class="caption">Registration Head</div>
+        </div>
+        <div class="team-card reveal-up">
+        <div class="thumb">
+          <img src="Karishma.jpg" alt="Karishma Kodwani">
+          <span>Karishma Kodwani</span>
+       </div>
+          <div class="caption">Promotion Head</div>
+        </div>
+        <div class="team-card reveal-up">
+        <div class="thumb">
+          <img src="Tejas.jpg" alt="Tejas Dongre">
+          <span>Tejas Dongre</span>
+       </div>
+          <div class="caption">Media Head</div>
+        </div>
+        <div class="team-card reveal-up">
+        <div class="thumb">
+          <img src="Snehal.jpg" alt="Snehal Turkar">
+          <span>Snehal Turkar</span>
+       </div>
+          <div class="caption">Decoration head</div>
+        </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // ==================== Smooth scrolling and dot navigation ====================
+    (function() {
+      const dots = document.querySelectorAll('.dot');
+      const sections = document.querySelectorAll('section');
+      
+      // Dot click navigation
+      dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+          sections[index].scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+          });
+        });
+      });
+
+      // Update active dot on scroll
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const index = Array.from(sections).indexOf(entry.target);
+            dots.forEach((dot, i) => {
+              dot.classList.toggle('active', i === index);
+            });
+          }
+        });
+      }, { threshold: 0.5 });
+
+      sections.forEach(section => observer.observe(section));
+    })();
+
+    // ==================== Reveal animations ====================
+    (function() {
+      const els = document.querySelectorAll('.reveal-up');
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('in');
+            obs.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.25 });
+      
+      els.forEach(el => obs.observe(el));
+    })();
+
+    // ==================== Splash screen ====================
+    // window.addEventListener('load', () => {
+    //   const splash = document.getElementById('splash');
+    //   splash.classList.add('show');
+
+    //   setTimeout(() => {
+    //     splash.style.opacity = '0';
+    //     setTimeout(() => splash.style.display = 'none', 1000);
+    //   }, 2500);
+    // });
+
+    // ==================== Countdown timer ====================
+    (function() {
+      const targetDate = new Date("2025-10-10T23:59:59").getTime();
+
+      function updateCountdown() {
+        const now = new Date().getTime();
+        const diff = targetDate - now;
+
+        if (diff <= 0) {
+          document.getElementById("countdown").innerHTML =
+            "<h3 class='title glow-text'>🚀 The Future is Now!</h3>";
+          return;
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+        const values = { days, hours, minutes, seconds };
+        
+        for (let id in values) {
+          const el = document.getElementById(id);
+          if (el && el.textContent !== values[id].toString().padStart(2, "0")) {
+            el.parentElement.classList.add("flip");
+            setTimeout(() => el.parentElement.classList.remove("flip"), 600);
+          }
+          if (el) el.textContent = values[id].toString().padStart(2, "0");
+        }
+      }
+
+      setInterval(updateCountdown, 1000);
+      updateCountdown();
+    })();
+
+    // ==================== Particle systems ====================
+   (function() {
+  const canvas = document.getElementById("particle-canvas");
+  if (!canvas) return;
+
+  const ctx = canvas.getContext("2d");
+  let particles = [];
+  const mouse = { x: null, y: null };
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    createTextParticles(); // regenerate particles when resizing
+  }
+
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  canvas.addEventListener("mousemove", e => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+  });
+
+  canvas.addEventListener("mouseleave", () => {
+    mouse.x = null;
+    mouse.y = null;
+  });
+
+  function createTextParticles() {
+    // Adjust font size dynamically for responsiveness
+    const fontSize = Math.min(0.15 * canvas.width, 150); // 15% of width, max 150px
+    ctx.font = `bold ${fontSize}px Arial`;
+    ctx.fillStyle = '#00f0ff';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+
+    const text = 'CYBERPUNK';
+    const x = canvas.width / 2;
+    const y = canvas.height / 2;
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillText(text, x, y);
+
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    particles = [];
+
+    for (let py = 0; py < imageData.height; py += 4) {
+      for (let px = 0; px < imageData.width; px += 4) {
+        const index = (py * imageData.width + px) * 4;
+        const alpha = imageData.data[index + 3];
+        if (alpha > 128) {
+          particles.push({
+            x: Math.random() * canvas.width+2,
+            y: Math.random() * canvas.height+2,
+            targetX: px,
+            targetY: py,
+            size: Math.random() * 2 + 1,
+            color: `rgba(0, 240, 255, ${Math.random() * 0.8 + 0.2})`,
+            velocity: 0.05
+          });
+        }
+      }
+    }
+  }
+
+  (function() {
+  const canvas = document.getElementById('space-bg');
+  const ctx = canvas.getContext('2d');
+  let stars = [];
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resizeCanvas);
+  resizeCanvas();
+
+  function createStars() {
+    stars = [];
+    for (let i = 0; i < 200; i++) {
+      stars.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 1.5 + 0.2,
+        speed: Math.random() * 0.3 + 0.1,
+        alpha: Math.random()
+      });
+    }
+  }
+
+  function animateStars() {
+    ctx.fillStyle = 'black';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    stars.forEach(star => {
+      star.x -= star.speed;
+      if (star.x < 0) star.x = canvas.width;
+
+      ctx.beginPath();
+      ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
+      ctx.fill();
+    });
+
+    requestAnimationFrame(animateStars);
+  }
+
+  createStars();
+  animateStars();
+})();
+
+
+  function animateParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    particles.forEach(p => {
+      const dx = p.targetX - p.x;
+      const dy = p.targetY - p.y;
+      p.x += dx * p.velocity;
+      p.y += dy * p.velocity;
+
+      // Mouse interaction
+      if (mouse.x !== null && mouse.y !== null) {
+        const dist = Math.hypot(mouse.x - p.x, mouse.y - p.y);
+        if (dist < 100) {
+          const angle = Math.atan2(p.y - mouse.y, p.x - mouse.x);
+          const force = (100 - dist) / 50;
+          p.x += Math.cos(angle) * force * 3;
+          p.y += Math.sin(angle) * force * 3;
+        }
+      }
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.fill();
+    });
+
+    requestAnimationFrame(animateParticles);
+  }
+
+  animateParticles();
+})();
+
+
+    // ==================== Background animations ====================
+    (function() {
+      // Stars for city section
+      const starsCanvas = document.getElementById('stars');
+      if (starsCanvas) {
+        const ctx = starsCanvas.getContext('2d');
+        let stars = [];
+
+        function resizeStars() {
+          starsCanvas.width = window.innerWidth;
+          starsCanvas.height = window.innerHeight;
+        }
+
+        function createStars() {
+          stars = [];
+          for (let i = 0; i < 100; i++) {
+            stars.push({
+              x: Math.random() * starsCanvas.width,
+              y: Math.random() * starsCanvas.height,
+              radius: Math.random() * 2,
+              speed: Math.random() * 0.5 + 0.1,
+              opacity: Math.random()
+            });
+          }
+        }
+
+        function animateStars() {
+          ctx.clearRect(0, 0, starsCanvas.width, starsCanvas.height);
+          
+          stars.forEach(star => {
+            star.x -= star.speed;
+            if (star.x < 0) star.x = starsCanvas.width;
+            
+            ctx.beginPath();
+            ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255, 255, 255, ${star.opacity})`;
+            ctx.fill();
+          });
+          
+          requestAnimationFrame(animateStars);
+        }
+
+        window.addEventListener('resize', () => {
+          resizeStars();
+          createStars();
+        });
+
+        resizeStars();
+        createStars();
+        animateStars();
+      }
+
+      // Events section stars
+      const eventsStars = document.getElementById('stars-events');
+      if (eventsStars) {
+        const ctx = eventsStars.getContext('2d');
+        let stars = [];
+
+        function resizeEventsStars() {
+          eventsStars.width = window.innerWidth;
+          eventsStars.height = window.innerHeight;
+        }
+
+        function createEventsStars() {
+          stars = [];
+          for (let i = 0; i < 80; i++) {
+            stars.push({
+              x: Math.random() * eventsStars.width,
+              y: Math.random() * eventsStars.height,
+              radius: Math.random() * 1.5,
+              speed: Math.random() * 0.3 + 0.1,
+              opacity: Math.random() * 0.8
+            });
+          }
+        }
+
+        function animateEventsStars() {
+          ctx.clearRect(0, 0, eventsStars.width, eventsStars.height);
+          
+          stars.forEach(star => {
+            star.x -= star.speed;
+            if (star.x < 0) star.x = eventsStars.width;
+            
+            ctx.beginPath();
+            ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(0, 240, 255, ${star.opacity})`;
+            ctx.fill();
+          });
+          
+          requestAnimationFrame(animateEventsStars);
+        }
+
+        window.addEventListener('resize', () => {
+          resizeEventsStars();
+          createEventsStars();
+        });
+
+        resizeEventsStars();
+        createEventsStars();
+        animateEventsStars();
+      }
+
+
+      
+      // Countdown particles
+       const canvas2 = document.getElementById('countdown-particles');
+const ctx2 = canvas2.getContext('2d');
+canvas2.width = window.innerWidth;
+canvas2.height = window.innerHeight;
+
+// Stars array
+let stars2 = [];
+for (let i = 0; i < 150; i++) {
+  stars2.push({
+    x: Math.random() * canvas2.width,
+    y: Math.random() * canvas2.height,
+    radius: Math.random() * 2,
+    speed: Math.random() * 0.5 + 0.2,
+    alpha: Math.random() * 0.8 + 0.2
+  });
+}
+
+// Animate stars (diagonal)
+function animateStars2() {
+  ctx2.clearRect(0, 0, canvas2.width, canvas2.height);
+  stars2.forEach(star => {
+    star.x += star.speed;
+    star.y -= star.speed; // bottom-left to top-right
+    if (star.x > canvas2.width) star.x = 0;
+    if (star.y < 0) star.y = canvas2.height;
+
+    ctx2.beginPath();
+    ctx2.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+    ctx2.fillStyle = `rgba(255,255,255,${star.alpha})`;
+    ctx2.fill();
+  });
+  requestAnimationFrame(animateStars2);
+}
+animateStars2();
+
+// Astronaut floating + moving diagonally
+const astronaut = document.getElementById('astronaut');
+let angle = 0;
+
+// Starting position: bottom-left
+let posX = -150; // start off-screen
+let posY = window.innerHeight + 150;
+
+function moveAstronaut() {
+  angle += 0.02;
+
+  // Move diagonally: right and up
+  posX += 1;       // speed to the right
+  posY -= 0.6;     // speed upwards
+
+  // Wrap around screen edges
+  if (posX > window.innerWidth) posX = -150; // reset to left
+  if (posY < -150) posY = window.innerHeight; // reset to bottom
+
+  // Add floating effect
+  const x = posX + Math.sin(angle) * 20; 
+  const y = posY + Math.cos(angle) * 20;
+
+  astronaut.style.transform = `translate(${x}px, ${y}px)`;
+
+  requestAnimationFrame(moveAstronaut);
+}
+
+moveAstronaut();
+
+// Responsive adjustment
+window.addEventListener('resize', () => {
+  posY = window.innerHeight + 150;
+});
+
+
+  function createParticles() {
+    for (let i = 0; i < 100; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 2 + 1,
+        vx: (Math.random() - 0.5) * 0.5,
+        vy: (Math.random() - 0.5) * 0.5,
+        alpha: Math.random(),
+        delta: Math.random() * 0.02
+      });
+    }
+  }
+
+  function drawParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(0, 240, 255, ${p.alpha})`;
+      ctx.fill();
+
+      p.x += p.vx;
+      p.y += p.vy;
+      p.alpha += p.delta;
+
+      if (p.alpha <= 0 || p.alpha >= 1) p.delta *= -1;
+      if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+      if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+    });
+
+    requestAnimationFrame(drawParticles);
+  }
+
+  createParticles();
+  drawParticles();
+})
+
+();
+
+(function() {
+  const skyline = document.getElementById('skyline');
+  if (!skyline) return;
+
+  let buildings = [];
+  let offset = 0;
+
+  function createBuildings() {
+    skyline.innerHTML = '';
+    buildings = [];
+    const numBuildings = Math.floor(window.innerWidth / 35) * 2; // doubled for scrolling
+    for (let i = 0; i < numBuildings; i++) {
+      const building = document.createElement('div');
+      building.classList.add('building');
+      building.style.height = `${Math.random() * 300 + 100}px`;
+      building.style.width = `${Math.random() * 25 + 20}px`;
+      skyline.appendChild(building);
+      buildings.push(building);
+    }
+  }
+
+  function animateSkyline() {
+    offset -= 0.5; // speed
+    if (offset <= -window.innerWidth) offset = 0;
+    skyline.style.transform = `translateX(${offset}px)`;
+    requestAnimationFrame(animateSkyline);
+  }
+
+  window.addEventListener('resize', createBuildings);
+  createBuildings();
+  animateSkyline();
+})
+();
+function flickerBuildings() {
+  buildings.forEach(building => {
+    const flicker = Math.random() * 0.6 + 0.4; // random opacity
+    building.style.opacity = flicker;
+  });
+  setTimeout(flickerBuildings, 100); // update every 0.1s
+}
+
+flickerBuildings();
+
+
+
+
+  </script>
+</body>
+
+</html>
